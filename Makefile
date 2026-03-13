@@ -2,7 +2,7 @@ APP_NAME=go-test-case-api
 
 .PHONY: run
 run:
-	docker compose up --build
+	GOFLAGS=-buildvcs=false docker compose up --build
 
 
 .PHONY: new-migration
