@@ -1,0 +1,289 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Test API built in Go + Gin",
+        "title": "Go Test Case API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/accounts": {
+            "post": {
+                "description": "Create a new account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Create account",
+                "parameters": [
+                    {
+                        "description": "Account payload",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Account"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{id}": {
+            "get": {
+                "description": "Retrieve an account by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Get account by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Account"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an account by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Delete an account",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions": {
+            "post": {
+                "description": "Creates a new financial transaction for an account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Create a transaction",
+                "parameters": [
+                    {
+                        "description": "Transaction payload",
+                        "name": "transaction",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateTransactionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Transaction"
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions/{id}": {
+            "get": {
+                "description": "Retrieve all transactions by accountID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Get transactions by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Transaction"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing transaction by transactionID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Update a transaction",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Transaction ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Transaction update payload",
+                        "name": "transaction",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateTransactionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Transaction"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.Account": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "document_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateAccountRequest": {
+            "type": "object",
+            "required": [
+                "document_number"
+            ],
+            "properties": {
+                "document_number": {
+                    "type": "string",
+                    "example": "12345678900"
+                }
+            }
+        },
+        "model.CreateTransactionRequest": {
+            "type": "object",
+            "required": [
+                "account_id",
+                "amount",
+                "operation_type_id"
+            ],
+            "properties": {
+                "account_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "amount": {
+                    "type": "number",
+                    "example": 22.2
+                },
+                "operation_type_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "model.Transaction": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "event_date": {
+                    "type": "string"
+                },
+                "operation_type_id": {
+                    "type": "integer"
+                },
+                "transaction_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.UpdateTransactionRequest": {
+            "type": "object",
+            "required": [
+                "amount"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                }
+            }
+        }
+    }
+}

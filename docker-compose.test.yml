@@ -1,0 +1,19 @@
+services:
+  test-db:
+    image: postgres:16
+    container_name: go_test_db
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: testdb
+    ports:
+      - "5433:5432" # usa porta diferente da app normal
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U test -d testdb" ]
+      interval: 2s
+      retries: 10
+    volumes:
+      - testdb_data:/var/lib/postgresql/data
+
+volumes:
+  testdb_data:

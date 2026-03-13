@@ -1,0 +1,32 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "swag init -g cmd/api/main.go -o docs && go build -o ./tmp/server ./cmd/api"
+bin = "tmp/server"
+full_bin = "tmp/server"
+
+include_ext = ["go"]
+exclude_dir = [
+  "tmp",
+  "vendor",
+  "docs",
+  "migrations"
+]
+
+delay = 1000
+stop_on_error = true
+send_interrupt = true
+kill_delay = 500
+
+[log]
+time = true
+
+[color]
+main = "magenta"
+watcher = "cyan"
+build = "yellow"
+runner = "green"
+
+[misc]
+clean_on_exit = true

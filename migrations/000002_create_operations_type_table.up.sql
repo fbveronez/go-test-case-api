@@ -1,0 +1,5 @@
+CREATE TABLE operation_types (
+    operation_type_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    description VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);

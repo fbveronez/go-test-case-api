@@ -1,0 +1,191 @@
+basePath: /
+definitions:
+  model.Account:
+    properties:
+      account_id:
+        type: integer
+      created_at:
+        type: string
+      document_number:
+        type: string
+    type: object
+  model.CreateAccountRequest:
+    properties:
+      document_number:
+        example: "12345678900"
+        type: string
+    required:
+    - document_number
+    type: object
+  model.CreateTransactionRequest:
+    properties:
+      account_id:
+        example: 1
+        type: integer
+      amount:
+        example: 22.2
+        type: number
+      operation_type_id:
+        example: 1
+        type: integer
+    required:
+    - account_id
+    - amount
+    - operation_type_id
+    type: object
+  model.Transaction:
+    properties:
+      account_id:
+        type: integer
+      amount:
+        type: number
+      event_date:
+        type: string
+      operation_type_id:
+        type: integer
+      transaction_id:
+        type: integer
+    type: object
+  model.UpdateTransactionRequest:
+    properties:
+      amount:
+        type: number
+    required:
+    - amount
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Test API built in Go + Gin
+  title: Go Test Case API
+  version: "1.0"
+paths:
+  /accounts:
+    post:
+      consumes:
+      - application/json
+      description: Create a new account
+      parameters:
+      - description: Account payload
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Account'
+      summary: Create account
+      tags:
+      - Accounts
+  /accounts/{id}:
+    delete:
+      description: Delete an account by ID
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      summary: Delete an account
+      tags:
+      - Accounts
+    get:
+      description: Retrieve an account by its ID
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Account'
+      summary: Get account by ID
+      tags:
+      - Accounts
+  /transactions:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new financial transaction for an account
+      parameters:
+      - description: Transaction payload
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Transaction'
+      summary: Create a transaction
+      tags:
+      - Transactions
+  /transactions/{id}:
+    get:
+      description: Retrieve all transactions by accountID
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Transaction'
+            type: array
+      summary: Get transactions by ID
+      tags:
+      - Transactions
+    put:
+      consumes:
+      - application/json
+      description: Update an existing transaction by transactionID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Transaction update payload
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Transaction'
+      summary: Update a transaction
+      tags:
+      - Transactions
+swagger: "2.0"
