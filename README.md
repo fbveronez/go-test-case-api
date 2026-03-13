@@ -1,7 +1,7 @@
 go-test-case-api
 ================
 
-RESTful API developed in **Go**, with **Docker**, **hot reload**, **migrations**, and **Swagger** documentation. Designed to be modular, professional, and easy to maintain.
+RESTful API developed in **Go**, with **Docker**, **hot reload**, **migrations**, and **Swagger** documentation.
 
 Technologies
 ------------
@@ -44,25 +44,6 @@ This command will:
 
     docker compose down
 
-Migrations
-----------
-
-The project uses migrations to manage the PostgreSQL database.
-
-- Apply all migrations:
-
-
-
-    make migrate-up
-
-- Rollback all migrations:
-
-
-
-    make migrate-down
-
-> Migrations are located in the `migrations/` folder.
-
 Hot Reload
 ----------
 
@@ -89,8 +70,13 @@ Testing
 To run unit tests using `testify`:
 
 
-
     make test
+
+To run functional tests:
+
+
+    make test-functional
+
 
 Makefile
 --------
@@ -106,18 +92,36 @@ Example of main commands:
 Project Structure
 -----------------
 ```
-go-test-case-api/
-├─ cmd/ # Main application entrypoint
-├─ internal/
-│ ├─ service/ # Business logic
-│ ├─ repository/ # Database access
-│ └─ handler/ # HTTP handlers
-├─ migrations/ # Migration files
-├─ swagger/ # Swagger documentation files
-├─ Dockerfile
-├─ docker-compose.yml
-├─ Makefile
-└─ go.mod
+GO-TEST-CASE-API
+│
+├── cmd
+│   └── api
+│       └── main.go
+│
+├── docs
+│   ├── docs.go
+│   ├── swagger.json
+│   └── swagger.yaml
+│
+├── internal
+│   ├── db
+│   ├── functional_tests
+│   ├── handlers
+│   ├── model
+│   ├── repository
+│   └── service
+│
+├── migrations
+├── .air.toml
+├── coverage.out
+├── docker-compose.test.yml
+├── docker-compose.yml
+├── Dockerfile
+├── go.mod
+├── go.sum
+├── LICENSE
+├── Makefile
+└── README.md
 ```
 
 
