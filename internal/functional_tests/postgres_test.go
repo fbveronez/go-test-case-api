@@ -45,7 +45,6 @@ func ConnectTestDB() *gorm.DB {
 		log.Fatal("Failed to connect test DB:", err)
 	}
 
-	// AutoMigrate garante que as tabelas existam
 	if err := db.AutoMigrate(&model.Account{}, &model.Transaction{}); err != nil {
 		log.Fatal("Failed to migrate test DB:", err)
 	}

@@ -126,7 +126,7 @@ func TestGetAccountByIDBadRequest(t *testing.T) {
 	mockService := new(service.MockAccountService)
 	handler := NewAccountHandler(mockService)
 
-	req, _ := http.NewRequest(http.MethodGet, "/accounts/abc", nil) // ID inválido
+	req, _ := http.NewRequest(http.MethodGet, "/accounts/abc", nil)
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	c.Request = req

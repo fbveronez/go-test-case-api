@@ -78,10 +78,8 @@ func TestCreateAccountDuplicate(t *testing.T) {
 	w2 := httptest.NewRecorder()
 	router.ServeHTTP(w2, req2)
 
-	// Dependendo de como você implementou duplicidade, pode ser 500 ou 409
 	assert.Equal(t, http.StatusInternalServerError, w2.Code)
 
-	// Optional: verificar mensagem de erro
 	expectedMsg := "document number already exists"
 	assert.Contains(t, w2.Body.String(), expectedMsg)
 }
