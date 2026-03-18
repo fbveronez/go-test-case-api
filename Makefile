@@ -8,7 +8,7 @@ run:
 .PHONY: new-migration
 new-migration:
 ifndef name
-	$(error "Você precisa fornecer o nome da migration. Ex: make new-migration name=create_accounts_table")
+	$(error "you need to input the migration name. ex: make new-migration name=create_accounts_table")
 endif
 	migrate create -ext sql -dir migrations -seq $(name)
 

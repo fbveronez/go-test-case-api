@@ -17,7 +17,6 @@ COPY . .
 
 ENV GOFLAGS=-buildvcs=false
 RUN swag init -g cmd/api/main.go -o docs
-RUN swag init -g cmd/api/main.go -o docs
 
 EXPOSE 8080
 
