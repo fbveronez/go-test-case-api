@@ -1,4 +1,4 @@
-package service
+package mocks
 
 import (
 	"github.com/fbveronez/go-test-case-api/internal/model"

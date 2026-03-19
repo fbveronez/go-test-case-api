@@ -43,7 +43,9 @@ test-functional:
 
 .PHONY: coverage
 coverage:
-	go test ./... -coverprofile=coverage.out
+	go test ./internal/handlers ./internal/service -coverprofile=coverage.out
+	go tool cover -func=coverage.out
+	grep -v "/mocks/" coverage.out > coverage.tmp
 	go tool cover -html=coverage.out
 
 

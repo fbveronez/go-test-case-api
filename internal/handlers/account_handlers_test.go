@@ -3,12 +3,13 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/fbveronez/go-test-case-api/internal/mocks"
 	"github.com/fbveronez/go-test-case-api/internal/model"
-	"github.com/fbveronez/go-test-case-api/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -18,7 +19,7 @@ import (
 func TestCreateAccountSuccess(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	mockService := new(service.MockAccountService)
+	mockService := new(mocks.MockAccountService)
 	handler := NewAccountHandler(mockService)
 
 	payload := model.CreateAccountRequest{
@@ -54,7 +55,7 @@ func TestCreateAccountSuccess(t *testing.T) {
 func TestCreateAccountBadRequest(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	mockService := new(service.MockAccountService)
+	mockService := new(mocks.MockAccountService)
 	handler := NewAccountHandler(mockService)
 
 	req, _ := http.NewRequest(http.MethodPost, "/accounts", bytes.NewBuffer([]byte(`{"document_number":`)))
@@ -72,7 +73,7 @@ func TestCreateAccountBadRequest(t *testing.T) {
 func TestGetAccountByIDSuccess(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	mockService := new(service.MockAccountService)
+	mockService := new(mocks.MockAccountService)
 	handler := NewAccountHandler(mockService)
 
 	account := &model.Account{
@@ -104,7 +105,7 @@ func TestGetAccountByIDSuccess(t *testing.T) {
 func TestGetAccountByIDNotFound(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	mockService := new(service.MockAccountService)
+	mockService := new(mocks.MockAccountService)
 	handler := NewAccountHandler(mockService)
 
 	mockService.On("GetAccountByID", uint(2)).Return((*model.Account)(nil), gorm.ErrRecordNotFound)
@@ -123,7 +124,7 @@ func TestGetAccountByIDNotFound(t *testing.T) {
 func TestGetAccountByIDBadRequest(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	mockService := new(service.MockAccountService)
+	mockService := new(mocks.MockAccountService)
 	handler := NewAccountHandler(mockService)
 
 	req, _ := http.NewRequest(http.MethodGet, "/accounts/abc", nil)
@@ -140,7 +141,7 @@ func TestGetAccountByIDBadRequest(t *testing.T) {
 func TestGetAccountByIDInternalError(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	mockService := new(service.MockAccountService)
+	mockService := new(mocks.MockAccountService)
 	handler := NewAccountHandler(mockService)
 
 	mockService.On("GetAccountByID", uint(3)).Return((*model.Account)(nil), assert.AnError)
@@ -159,7 +160,7 @@ func TestGetAccountByIDInternalError(t *testing.T) {
 func TestDeleteByIDSuccess(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	mockService := new(service.MockAccountService)
+	mockService := new(mocks.MockAccountService)
 	handler := NewAccountHandler(mockService)
 
 	mockService.On("DeleteAccountByID", uint64(3)).Return(nil)
@@ -173,4 +174,40 @@ func TestDeleteByIDSuccess(t *testing.T) {
 	handler.DeleteAccount(c)
 
 	assert.Equal(t, http.StatusNoContent, w.Code)
+}
+
+func TestDeleteAccountNotFound(t *testing.T) {
+	mockService := new(mocks.MockAccountService)
+	handler := NewAccountHandler(mockService)
+
+	mockService.On("DeleteAccountByID", uint64(1)).
+		Return(gorm.ErrRecordNotFound)
+
+	req, _ := http.NewRequest(http.MethodDelete, "/accounts/1", nil)
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+	c.Request = req
+	c.Params = gin.Params{{Key: "id", Value: "1"}}
+
+	handler.DeleteAccount(c)
+
+	assert.Equal(t, http.StatusNotFound, w.Code)
+}
+
+func TestDeleteAccountInternalError(t *testing.T) {
+	mockService := new(mocks.MockAccountService)
+	handler := NewAccountHandler(mockService)
+
+	mockService.On("DeleteAccountByID", uint64(1)).
+		Return(errors.New("db error"))
+
+	req, _ := http.NewRequest(http.MethodDelete, "/accounts/1", nil)
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+	c.Request = req
+	c.Params = gin.Params{{Key: "id", Value: "1"}}
+
+	handler.DeleteAccount(c)
+
+	assert.Equal(t, http.StatusInternalServerError, w.Code)
 }

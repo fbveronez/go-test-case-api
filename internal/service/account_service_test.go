@@ -23,7 +23,11 @@ func (m *mockAccountRepository) Create(account *model.Account) error {
 }
 
 func (m *mockAccountRepository) FindByID(id uint) (*model.Account, error) {
-	return m.account, m.err
+	args := m.Called(id)
+	if args.Get(0) != nil {
+		return args.Get(0).(*model.Account), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (m *mockAccountRepository) DeleteByID(id uint64) error {
@@ -93,6 +97,12 @@ func TestGetAccountByIDSuccess(t *testing.T) {
 		},
 	}
 
+	expected := &model.Account{
+		AccountID: 1,
+	}
+	repo.On("FindByID", uint(1)).
+		Return(expected, nil)
+
 	service := NewAccountService(repo)
 
 	account, err := service.GetAccountByID(1)
@@ -101,6 +111,18 @@ func TestGetAccountByIDSuccess(t *testing.T) {
 	assert.Equal(t, uint(1), uint(account.AccountID))
 }
 
+func TestGetAccountByIDNotFound(t *testing.T) {
+	repo := new(mockAccountRepository)
+	service := NewAccountService(repo)
+
+	repo.On("FindByID", uint(1)).
+		Return(nil, gorm.ErrRecordNotFound)
+
+	result, err := service.GetAccountByID(1)
+
+	assert.Nil(t, result)
+	assert.ErrorIs(t, err, gorm.ErrRecordNotFound)
+}
 func TestDeleteByIDSuccess(t *testing.T) {
 
 	repo := new(mockAccountRepository)
