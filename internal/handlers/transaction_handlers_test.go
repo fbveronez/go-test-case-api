@@ -22,7 +22,8 @@ func TestCreateTransactionSuccess(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(mocks.MockTransactionService)
-	handler := NewTransactionHandler(mockService)
+	accountService := new(mocks.MockAccountService)
+	handler := NewTransactionHandler(mockService, accountService)
 
 	payload := model.CreateTransactionRequest{
 		AccountID:       1,
@@ -60,7 +61,8 @@ func TestCreateTransactionBadRequest(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(mocks.MockTransactionService)
-	handler := NewTransactionHandler(mockService)
+	accountService := new(mocks.MockAccountService)
+	handler := NewTransactionHandler(mockService, accountService)
 
 	req, _ := http.NewRequest(http.MethodPost, "/accounts", bytes.NewBuffer([]byte(`{"amount":`)))
 	req.Header.Set("Content-Type", "application/json")
@@ -78,7 +80,8 @@ func TestCreateTransactionMissingRequiredParameter(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(mocks.MockTransactionService)
-	handler := NewTransactionHandler(mockService)
+	accountService := new(mocks.MockAccountService)
+	handler := NewTransactionHandler(mockService, accountService)
 
 	payload := model.CreateTransactionRequest{
 		AccountID:       1,
@@ -103,7 +106,8 @@ func TestCreateTransactionMissingRequiredParameter(t *testing.T) {
 
 func TestCreateTransaction_AccountNotFound(t *testing.T) {
 	mockService := new(mocks.MockTransactionService)
-	handler := NewTransactionHandler(mockService)
+	accountService := new(mocks.MockAccountService)
+	handler := NewTransactionHandler(mockService, accountService)
 
 	payload := model.CreateTransactionRequest{
 		AccountID:       1,
@@ -134,7 +138,8 @@ func TestGetTransactionsByAccountIDSuccess(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(mocks.MockTransactionService)
-	handler := NewTransactionHandler(mockService)
+	accountService := new(mocks.MockAccountService)
+	handler := NewTransactionHandler(mockService, accountService)
 
 	transactions := []model.Transaction{
 		{
@@ -176,7 +181,8 @@ func TestGetTransactionInvalidID(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(mocks.MockTransactionService)
-	handler := NewTransactionHandler(mockService)
+	accountService := new(mocks.MockAccountService)
+	handler := NewTransactionHandler(mockService, accountService)
 
 	req, _ := http.NewRequest(http.MethodPut, "/transactions/abc", nil)
 	req.Header.Set("Content-Type", "application/json")
@@ -195,7 +201,8 @@ func TestGetTransactionNotFound(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(mocks.MockTransactionService)
-	handler := NewTransactionHandler(mockService)
+	accountService := new(mocks.MockAccountService)
+	handler := NewTransactionHandler(mockService, accountService)
 
 	mockService.On("GetTransactionsByAccountID", uint64(1), mock.Anything).
 		Return(nil, gorm.ErrRecordNotFound)
@@ -217,7 +224,8 @@ func TestUpdateTransactionInvalidID(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(mocks.MockTransactionService)
-	handler := NewTransactionHandler(mockService)
+	accountService := new(mocks.MockAccountService)
+	handler := NewTransactionHandler(mockService, accountService)
 
 	req, _ := http.NewRequest(http.MethodPut, "/transactions/abc", nil)
 	req.Header.Set("Content-Type", "application/json")
@@ -236,7 +244,8 @@ func TestUpdateTransactionInvalidPayload(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(mocks.MockTransactionService)
-	handler := NewTransactionHandler(mockService)
+	accountService := new(mocks.MockAccountService)
+	handler := NewTransactionHandler(mockService, accountService)
 
 	req, _ := http.NewRequest(http.MethodPut, "/transactions/1", strings.NewReader("invalid-json"))
 	req.Header.Set("Content-Type", "application/json")
@@ -255,7 +264,8 @@ func TestUpdateTransactionNotFound(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(mocks.MockTransactionService)
-	handler := NewTransactionHandler(mockService)
+	accountService := new(mocks.MockAccountService)
+	handler := NewTransactionHandler(mockService, accountService)
 
 	mockService.On("UpdateTransaction", uint64(1), mock.Anything).
 		Return(nil, gorm.ErrRecordNotFound)
@@ -279,7 +289,8 @@ func TestUpdateTransactionInternal(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(mocks.MockTransactionService)
-	handler := NewTransactionHandler(mockService)
+	accountService := new(mocks.MockAccountService)
+	handler := NewTransactionHandler(mockService, accountService)
 
 	mockService.On("UpdateTransaction", uint64(1), mock.Anything).
 		Return(nil, errors.New("db error"))

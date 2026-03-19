@@ -7,14 +7,16 @@ import (
 
 // CreateAccountRequest represents the payload required to create a new account.
 type CreateAccountRequest struct {
-	DocumentNumber string `json:"document_number" binding:"required" example:"12345678900"`
+	DocumentNumber       string  `json:"document_number" binding:"required" example:"12345678900"`
+	AvailableCreditLimit float64 `json:"available_credit_limit" binding:"required" example:"22.2"`
 }
 
 // Account represents the database.
 type Account struct {
-	AccountID      uint64    `gorm:"primaryKey;column:account_id" json:"account_id"`
-	DocumentNumber string    `gorm:"size:20;not null;unique;column:document_number" json:"document_number"`
-	CreatedAt      time.Time `gorm:"not null;default:now()" json:"created_at"`
+	AccountID            uint64    `gorm:"primaryKey;column:account_id" json:"account_id"`
+	DocumentNumber       string    `gorm:"size:20;not null;unique;column:document_number" json:"document_number"`
+	AvailableCreditLimit float64   `gorm:"type:numeric(12,2);not null;column:available_credit_limit" json:"available_credit_limit"`
+	CreatedAt            time.Time `gorm:"not null;default:now()" json:"created_at"`
 }
 
 // TableName overrides the default table name for GORM.

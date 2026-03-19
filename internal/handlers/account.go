@@ -38,7 +38,8 @@ func (h *AccountHandler) CreateAccount(c *gin.Context) {
 	}
 
 	account := model.Account{
-		DocumentNumber: req.DocumentNumber,
+		DocumentNumber:       req.DocumentNumber,
+		AvailableCreditLimit: req.AvailableCreditLimit,
 	}
 
 	if err := h.Service.CreateAccount(&account); err != nil {

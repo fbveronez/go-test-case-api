@@ -218,6 +218,9 @@ const docTemplate = `{
                 "account_id": {
                     "type": "integer"
                 },
+                "available_credit_limit": {
+                    "type": "number"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -229,9 +232,14 @@ const docTemplate = `{
         "model.CreateAccountRequest": {
             "type": "object",
             "required": [
+                "available_credit_limit",
                 "document_number"
             ],
             "properties": {
+                "available_credit_limit": {
+                    "type": "number",
+                    "example": 22.2
+                },
                 "document_number": {
                     "type": "string",
                     "example": "12345678900"

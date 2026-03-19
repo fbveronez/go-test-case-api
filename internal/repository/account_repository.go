@@ -12,6 +12,7 @@ type AccountRepository interface {
 	FindByID(id uint) (*model.Account, error)
 	FindByDocumentNumber(document string) (*model.Account, error)
 	DeleteByID(id uint64) error
+	UpdateCredit(account *model.Account, amount float64) error
 }
 
 // accountRepository is the concrete implementation of AccountRepository
@@ -69,5 +70,21 @@ func (r *accountRepository) DeleteByID(id uint64) error {
 		return gorm.ErrRecordNotFound
 	}
 
+	return nil
+}
+
+func (r *accountRepository) UpdateCredit(account *model.Account, amount float64) error {
+
+	value := account.AvailableCreditLimit + amount
+
+	if value <= 0 {
+		return gorm.ErrInvalidTransaction
+	}
+	update := model.Account{
+		AvailableCreditLimit: value,
+	}
+	if err := r.db.Model(&account).Updates(update).Error; err != nil {
+		return err
+	}
 	return nil
 }

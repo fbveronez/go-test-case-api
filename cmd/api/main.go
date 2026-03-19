@@ -28,13 +28,13 @@ func main() {
 
 	router := gin.Default()
 
-	transactionRepo := repository.NewTransactionRepository(db.DB)
-	transactionService := service.NewTransactionService(transactionRepo)
-	transactionHandler := handlers.NewTransactionHandler(transactionService)
-
 	accountRepo := repository.NewAccountRepository(db.DB)
 	accountService := service.NewAccountService(accountRepo)
 	accountHandler := handlers.NewAccountHandler(accountService)
+
+	transactionRepo := repository.NewTransactionRepository(db.DB)
+	transactionService := service.NewTransactionService(transactionRepo)
+	transactionHandler := handlers.NewTransactionHandler(transactionService, accountService)
 
 	router.POST("/accounts", accountHandler.CreateAccount)
 	router.GET("/accounts/:id", accountHandler.GetAccountByID)

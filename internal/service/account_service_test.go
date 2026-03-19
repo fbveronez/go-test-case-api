@@ -39,6 +39,10 @@ func (m *mockAccountRepository) FindByDocumentNumber(document string) (*model.Ac
 	return m.account, m.err
 }
 
+func (m *mockAccountRepository) UpdateCredit(account *model.Account, amount float64) error {
+	return m.err
+}
+
 func TestCreateAccountSuccess(t *testing.T) {
 
 	repo := &mockAccountRepository{}

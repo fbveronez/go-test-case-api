@@ -4,6 +4,8 @@ definitions:
     properties:
       account_id:
         type: integer
+      available_credit_limit:
+        type: number
       created_at:
         type: string
       document_number:
@@ -11,10 +13,14 @@ definitions:
     type: object
   model.CreateAccountRequest:
     properties:
+      available_credit_limit:
+        example: 22.2
+        type: number
       document_number:
         example: "12345678900"
         type: string
     required:
+    - available_credit_limit
     - document_number
     type: object
   model.CreateTransactionRequest:

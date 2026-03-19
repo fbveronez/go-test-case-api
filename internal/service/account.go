@@ -13,6 +13,7 @@ import (
 var (
 	ErrAccountNotFound     = errors.New("account not found")
 	ErrDocumentAlreadyUsed = errors.New("document number already exists")
+	ErrCreditLimitReached  = errors.New("the credit limit was reached.")
 )
 
 // AccountService defines the business operations related to accounts.
@@ -20,6 +21,7 @@ type AccountService interface {
 	CreateAccount(account *model.Account) error
 	GetAccountByID(id uint) (*model.Account, error)
 	DeleteAccountByID(id uint64) error
+	UpdateCreditLimit(id uint64, amount float64) error
 }
 
 // accountService is the concrete implementation of AccountService.
@@ -80,6 +82,20 @@ func (s *accountService) DeleteAccountByID(id uint64) error {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return gorm.ErrRecordNotFound
 		}
+		return err
+	}
+
+	return nil
+}
+
+func (s *accountService) UpdateCreditLimit(id uint64, amount float64) error {
+	account, err := s.repo.FindByID(uint(id))
+	if err != nil {
+		return err
+	}
+
+	err = s.repo.UpdateCredit(account, amount)
+	if err != nil {
 		return err
 	}
 

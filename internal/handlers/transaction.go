@@ -13,11 +13,12 @@ import (
 )
 
 type TransactionHandler struct {
-	Service service.TransactionService
+	Service         service.TransactionService
+	AcccountService service.AccountService
 }
 
-func NewTransactionHandler(s service.TransactionService) *TransactionHandler {
-	return &TransactionHandler{Service: s}
+func NewTransactionHandler(s service.TransactionService, a service.AccountService) *TransactionHandler {
+	return &TransactionHandler{Service: s, AcccountService: a}
 }
 
 // CreateTransaction godoc
@@ -42,6 +43,11 @@ func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
 		AccountID:       req.AccountID,
 		OperationTypeID: req.OperationTypeID,
 		Amount:          req.Amount,
+	}
+
+	if err := h.AcccountService.UpdateCreditLimit(req.AccountID, req.Amount); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "the credit limit was reached."})
+		return
 	}
 
 	if err := h.Service.CreateTransaction(&transaction); err != nil {

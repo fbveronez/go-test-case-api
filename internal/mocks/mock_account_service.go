@@ -1,3 +1,4 @@
+// Package mocks
 package mocks
 
 import (
@@ -21,5 +22,10 @@ func (m *MockAccountService) GetAccountByID(id uint) (*model.Account, error) {
 
 func (m *MockAccountService) DeleteAccountByID(accountID uint64) error {
 	args := m.Called(accountID)
+	return args.Error(0)
+}
+
+func (m *MockAccountService) UpdateCreditLimit(id uint64, amount float64) error {
+	args := m.Called(id)
 	return args.Error(0)
 }
