@@ -105,16 +105,17 @@ func TestCreateTransaction_AccountNotFound(t *testing.T) {
 	mockService := new(mocks.MockTransactionService)
 	handler := NewTransactionHandler(mockService)
 
-	body := `{
-		"account_id": 1,
-		"operation_type_id": 1,
-		"amount": 100
-	}`
+	payload := model.CreateTransactionRequest{
+		AccountID:       1,
+		OperationTypeID: 1,
+		Amount:          100,
+	}
+	body, _ := json.Marshal(payload)
 
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 
-	req := httptest.NewRequest(http.MethodPost, "/transactions", strings.NewReader(body))
+	req := httptest.NewRequest(http.MethodPost, "/transactions", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	c.Request = req
 
